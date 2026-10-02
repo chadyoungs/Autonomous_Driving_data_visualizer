@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 后端 FastAPI 服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vis_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/sdb/datasets/nuscenes-data/nuscenes:/data/nuscenes:ro
+    environment:
+      - NUSCENES_DATA_DIR=/data/nuscenes
+      - APP_DEBUG=0
+    networks:
+      - vis-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vis_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - vis-network
+
+networks:
+  vis-network:
