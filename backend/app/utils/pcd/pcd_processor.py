@@ -2,7 +2,7 @@ import numpy as np
 from app.utils.pcd.pcd_utils import PointCloudData
 
 
-class FlexiblePipeline:
+class FlexiblePcdPipeline:
     def __init__(self, steps: list = None):
         self.steps = steps if steps is not None else []
 

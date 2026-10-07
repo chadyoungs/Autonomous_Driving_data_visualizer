@@ -2,9 +2,11 @@ import logging
 import os
 
 from app.api.v1.router import api_router
+from app.core.exceptions import BizError
 from config import settings
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 DEBUG_MODE = os.getenv("APP_DEBUG", "0") == "1"
 
@@ -21,7 +23,25 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
-# allow cors (production environment is proxied by Nginx, development environment is convenient for independent debugging)
+
+@app.exception_handler(BizError)
+async def biz_error_handler(request: Request, exc: BizError):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"code": exc.status_code, "message": exc.msg},
+    )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception("Unhandled internal error")
+    return JSONResponse(
+        status_code=500,
+        content={"code": 500, "message": f"Server internal error: {str(exc)}"},
+    )
+
+
+# allow cors (produc environment is proxied by Nginx, dev environment is convenient for independent debugging)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

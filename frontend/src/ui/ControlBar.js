@@ -7,6 +7,7 @@ export class ControlBar {
     this.isPlaying = false;
     this.timer = null;
     this.element = null;
+    this.sceneDescEl = null;
     this.render();
     this.bindEvents();
   }
@@ -20,8 +21,18 @@ export class ControlBar {
       <button id="next-btn">next frame</button>
       <span>frame: <span id="frame-num">0</span> / <span id="total-num">0</span></span>
       <input type="range" id="frame-slider" min="0" max="0" value="0" />
+      <span id="scene-desc"></span>
     `;
     this.container.appendChild(this.element);
+    this.sceneDescEl = this.element.querySelector('#scene-desc');
+  }
+
+  setSceneDescription(text) {
+    if (this.sceneDescEl) {
+      const displayText = text || "";
+      this.sceneDescEl.textContent = displayText;
+      this.sceneDescEl.title = displayText;
+    }
   }
 
   setTotalFrames(num) {
@@ -46,7 +57,6 @@ export class ControlBar {
     const slider = this.element.querySelector('#frame-slider');
     const prevBtn = this.element.querySelector('#prev-btn');
     const nextBtn = this.element.querySelector('#next-btn');
-
     // play/pause button
     playBtn.onclick = () => {
       this.isPlaying = !this.isPlaying;
@@ -62,14 +72,12 @@ export class ControlBar {
         this.timer = null;
       }
     };
-
     // slider input event
     slider.oninput = (e) => {
       this.currentFrame = parseInt(e.target.value, 10);
       this.updateFrameDisplay();
       eventBus.emit('frame:change', this.currentFrame);
     };
-
     // prev frame
     prevBtn.onclick = () => {
       if (this.currentFrame > 0) {
@@ -86,6 +94,5 @@ export class ControlBar {
         eventBus.emit('frame:change', this.currentFrame);
       }
     };
-
   }
 }

@@ -26,12 +26,26 @@ body {
   border-radius:8px;
   display:flex;
   gap:10px;
-  align-items:center;
+  align-items:flex-start;
 }
+
 .control-bar button, .control-bar select {
   padding:4px 8px;
   cursor:pointer;
 }
+
+#scene-desc {
+  color: #ff3b3b;
+  font-weight: bold;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  max-width: 380px;
+}
+
 
 #camera-panels-container {
   position:fixed;

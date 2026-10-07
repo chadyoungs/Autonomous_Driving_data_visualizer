@@ -16,9 +16,9 @@ class App {
   }
 
   async init() {
-    // DOM存在性校验
+    // DOM （Document Object Model）elements check
     if (!this.appContainer || !this.controlBarContainer || !this.cameraContainer) {
-      console.error("DOM容器缺失，检查html id");
+      console.error("DOM elements missing, check html ids");
       return;
     }
 
@@ -38,28 +38,26 @@ class App {
       const scenesList = await ApiClient.getScenes();
       
       if (scenesList.length > 0) {
-        // 5. find the target scene
-        const targetScene = scenesList.find(s => s.name === targetSceneName);
-        if (!targetScene) {
-          console.error("scene not found", targetSceneName);
-          return;
-        }
-
-        // 6. get samples for the target scene
+        // 5. get samples for the target scene
         const res = await ApiClient.getSceneSamples(targetSceneName);
         this.samples = res.samples;
-
+        
+        // 6. get the scene description and update the control bar
+        const resDesc = await ApiClient.getSceneDescription(targetSceneName);
+        const sceneDesc = resDesc || "No scene description";
+        this.controlBar.setSceneDescription(`Scene: ${targetSceneName} | ${sceneDesc}`);
         this.controlBar.setTotalFrames(this.samples.length);
       }
 
-      // 7. bind frame change event to load the corresponding frame
+      // 6. bind frame change event to load the corresponding frame
       eventBus.on('frame:change', this.onFrameChange.bind(this));
 
-      // 8. load the first frame if samples are available
+      // 7. load the first frame if samples are available
       if (this.samples.length > 0) {
         await this.loadFrame(0);
       }
     } catch (err) {
+      alert(err.message);
       console.error("Init app failed: ", err);
     }
   }
@@ -95,6 +93,7 @@ class App {
         this.cameraPanel.updateImages(cameraImages);
       }
     } catch (err) {
+      alert(err.message);
       console.error(`load frame ${frameIdx} error:`, err);
     } finally {
       this.isLoading = false;

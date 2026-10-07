@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# Black
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+# isort
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+lines_between_sections = 1
+
+profile = "black"
+
+# ruff
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+lint.select = ["E", "W"]
+
+

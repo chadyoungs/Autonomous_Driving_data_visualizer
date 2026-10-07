@@ -1,5 +1,5 @@
 /**
- * 全局事件总线，实现 UI 与 3D 渲染层的彻底解耦
+ * Event emitter for global event handling, achieving complete decoupling between UI and 3D rendering layer
  */
 export class EventEmitter {
   constructor() {

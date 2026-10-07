@@ -42,7 +42,7 @@ export const CoordinateTransformer = {
       );
     }
     else{
-      // 2. Create coordinate change quaternion: 90 degree (Math.PI / 2) rotation around the Z-axis
+      // 2. Create coordinate change quaternion: 90 degree (Math.PI / 2) rotation around the X-axis
       qTrans = new THREE.Quaternion().setFromAxisAngle(
       new THREE.Vector3(1, 0, 0),
       Math.PI / 2

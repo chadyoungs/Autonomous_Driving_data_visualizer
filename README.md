@@ -11,6 +11,7 @@ The project is split into:
 ## Features
 
 - Browse available NuScenes scenes
+- Scene description
 - Load per-scene sample frames
 - Visualize LiDAR point clouds in 3D
 - Display 3D bounding boxes for each frame
@@ -20,7 +21,6 @@ The project is split into:
   - support bev feature
   - support can bus data
   - support prediction boxes
-  - support scene description on frontend
 
 ## Tech Stack
 
@@ -43,6 +43,7 @@ The project is split into:
 │   ├── app/
 │   │   ├── api/
 │   │   │   └── v1/
+│   │   ├── core/
 │   │   ├── schemas/
 │   │   ├── services/
 │   │   │   └── adapters/
@@ -77,6 +78,7 @@ The FastAPI service exposes dataset endpoints under `/api/v1`.
 Key routes include:
 
 - `GET /api/v1/scenes`
+- `GET /api/v1/scenes/{scene_name}/description`
 - `GET /api/v1/scenes/{scene_name}/samples`
 - `GET /api/v1/pointclouds/{sample_token}/binary`
 - `GET /api/v1/boxes/{sample_token}`

@@ -16,9 +16,7 @@ class PointCloudData:
     intensity: Optional[np.ndarray] = None  # (N, 1) float32
     rgb: Optional[np.ndarray] = None  # (N, 3) float32
     ground_mask: Optional[np.ndarray] = None  # (N,) bool
-    cluster_ids: Optional[np.ndarray] = (
-        None  # (N,) int32, -1: ground, -2: noise, >=0: cluster_id
-    )
+    cluster_ids: Optional[np.ndarray] = None  # (N,) int32, -1: ground, -2: noise, >=0: cluster_id
 
     def __post_init__(self):
         n_pts = len(self.xyz)
@@ -112,19 +110,23 @@ class VoxelDownsampler:
         self.voxel_size = voxel_size
 
     def __call__(self, pcd: PointCloudData) -> PointCloudData:
-        if len(pcd.xyz) == 0 or self.voxel_size <= 0:
+        xyz = pcd.xyz
+        if len(xyz) == 0 or self.voxel_size <= 0:
             return pcd
-        coords = np.floor(pcd.xyz / self.voxel_size).astype(np.int32)
-        _, idx = np.unique(coords, axis=0, return_index=True)
+
+        coords = np.floor(xyz / self.voxel_size).astype(np.int32)
+        # pack (x,y,z) int triplet into single viewable type for fast unique
+        dtype = np.dtype((np.void, coords.dtype.itemsize * coords.shape[1]))
+        packed = coords.view(dtype).ravel()
+        _, idx = np.unique(packed, return_index=True)
 
         return PointCloudData(
-            xyz=pcd.xyz[idx],
+            xyz=xyz[idx],
             intensity=pcd.intensity[idx],
             rgb=pcd.rgb[idx],
             ground_mask=pcd.ground_mask[idx],
             cluster_ids=pcd.cluster_ids[idx],
         )
-
 
 class RANSACGroundSegmenter:
     def __init__(self, ransac_threshold: float = 0.2, n_iter: int = 40):
