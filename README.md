@@ -6,7 +6,10 @@ The project is split into:
 
 - a FastAPI backend that exposes dataset metadata and frame data
 - a Vite + Three.js frontend that renders the 3D scene and UI
-- Docker-based deployment for local or server-side hosting
+- Docker-based deployment for local or server-side hosting 
+
+
+![screenshot](./screenshot.png)
 
 ## Features
 
